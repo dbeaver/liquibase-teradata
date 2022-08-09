@@ -1,0 +1,2 @@
+liquibase.ext.teradata.snapshot.TeradataUniqueConstraintSnapshotGenerator
+liquibase.ext.teradata.snapshot.TeradataForeignKeySnapshotGenerator

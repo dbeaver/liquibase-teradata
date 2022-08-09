@@ -111,6 +111,14 @@ public class TeradataDatabase extends AbstractJdbcDatabase {
 		return this.getDatabaseName();
 	}
 
+	// It is a kind of a messy story because usually, from the driver, we can get table containers as schemas,
+	// But actually, they are databases. They created with CREATE DATABASE syntax.
+	// So, let's Teradata supports only Databases (catalogs) to avoid confusion
+	@Override
+	public boolean supportsSchemas() {
+		return false;
+	}
+
 	/**
 	 * No sequence in Teradata
 	 */
