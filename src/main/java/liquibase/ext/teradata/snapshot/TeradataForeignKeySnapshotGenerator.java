@@ -8,7 +8,6 @@ import liquibase.exception.DatabaseException;
 import liquibase.ext.teradata.database.TeradataDatabase;
 import liquibase.snapshot.CachedRow;
 import liquibase.snapshot.DatabaseSnapshot;
-import liquibase.snapshot.InvalidExampleException;
 import liquibase.snapshot.JdbcDatabaseSnapshot;
 import liquibase.snapshot.SnapshotGenerator;
 import liquibase.snapshot.jvm.ForeignKeySnapshotGenerator;
@@ -17,6 +16,11 @@ import liquibase.structure.core.*;
 
 import java.util.List;
 
+/**
+ * This is kind of copy of ForeignKeySnapshotGenerator only for snapshotObject method.
+ * It fails for Teradata, because Teradata driver returns null as Deferred parameter
+ * and schema compare does not work. Maybe some day we will not need this class.
+ */
 public class TeradataForeignKeySnapshotGenerator extends ForeignKeySnapshotGenerator {
 
     public int getPriority(Class<? extends DatabaseObject> objectType, Database database) {
@@ -68,8 +72,11 @@ public class TeradataForeignKeySnapshotGenerator extends ForeignKeySnapshotGener
                 Column fkColumn = new Column(cleanNameFromDatabase(row.getString(METADATA_FKCOLUMN_NAME), database)).setRelation(foreignKeyTable);
                 boolean alreadyAdded = false;
                 for (Column existing : foreignKey.getForeignKeyColumns()) {
-                    if (DatabaseObjectComparatorFactory.getInstance().isSameObject(existing, fkColumn, snapshot.getSchemaComparisons(), database)) {
+                    if (DatabaseObjectComparatorFactory.getInstance()
+                        .isSameObject(existing, fkColumn, snapshot.getSchemaComparisons(), database))
+                    {
                         alreadyAdded = true; //already added. One is probably an alias
+                        break;
                     }
                 }
                 if (alreadyAdded) {

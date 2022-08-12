@@ -12,6 +12,9 @@ import liquibase.structure.core.Schema;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * Auxiliary class
+ */
 public class TeradataResultSetConstraintsExtractor extends TeradataResultSetCache.SingleResultSetExtractor {
 
     private Database database;
